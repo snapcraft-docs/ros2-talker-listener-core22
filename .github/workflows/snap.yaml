@@ -15,5 +15,4 @@ jobs:
     with:
       branch-name: content-sharing
       snap-name: ros2-talker-listener
-      snapcraft-args: --enable-experimental-extensions
-      enable-experimental-extensions-env: true
+      snapcraft-env: "ENABLE_EXPERIMENTAL_EXTENSIONS=1;ENABLE_EXPERIMENTAL_INPUTS=1"
