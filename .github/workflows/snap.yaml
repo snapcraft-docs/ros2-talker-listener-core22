@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: '${{ inputs.branch-name }}'
+        ref: content-sharing
     - uses: snapcore/action-build@v1
       env:
         SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: 1
@@ -30,13 +30,8 @@ jobs:
         sudo snap install ${{ steps.build-snap.outputs.snap }} --devmode
     # Do some testing with the snap
     - run: |
-        snap info ${{ inputs.snap-name }}
-    # Get branch name without forbidden character
-    - name: Branch name
-      id: branch-name
-      run: |
-        echo "BRANCH_NAME=$(echo ${{ inputs.branch-name }} | sed "s|\/|\-|")" >> "$GITHUB_OUTPUT"
+        snap info ros2-talker-listener
     - uses: actions/upload-artifact@v3
       with:
-        name: ${{ inputs.snap-name }}-${{ steps.branch-name.outputs.BRANCH_NAME }}
+        name: ros2-talker-listener
         path: ${{ steps.build-snap.outputs.snap }}
