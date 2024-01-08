@@ -10,10 +10,33 @@ on:
   workflow_call:
 
 jobs:
-  content-sharing-snap:
-    uses: ubuntu-robotics/snap_workflows/.github/workflows/build-install-test-snap.yaml@main
-    env:
-      SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: 1
-    with:
-      branch-name: content-sharing
-      snap-name: ros2-talker-listener
+  build-install-test-snap:
+    runs-on: ubuntu-latest
+    outputs:
+      snap-file: ${{ steps.build-snap.outputs.snap }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: '${{ inputs.branch-name }}'
+    - uses: snapcore/action-build@v1
+      env:
+        SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: 1
+      with:
+        snapcraft-args: '${{ inputs.snapcraft-args }}'
+      id: build-snap
+
+    # Make sure the snap is installable
+    - run: |
+        sudo snap install ${{ steps.build-snap.outputs.snap }} --devmode
+    # Do some testing with the snap
+    - run: |
+        snap info ${{ inputs.snap-name }}
+    # Get branch name without forbidden character
+    - name: Branch name
+      id: branch-name
+      run: |
+        echo "BRANCH_NAME=$(echo ${{ inputs.branch-name }} | sed "s|\/|\-|")" >> "$GITHUB_OUTPUT"
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.snap-name }}-${{ steps.branch-name.outputs.BRANCH_NAME }}
+        path: ${{ steps.build-snap.outputs.snap }}
