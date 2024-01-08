@@ -9,10 +9,12 @@ on:
   workflow_dispatch:
   workflow_call:
 
+env:
+  SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: 1
+
 jobs:
   content-sharing-snap:
     uses: ubuntu-robotics/snap_workflows/.github/workflows/build-install-test-snap.yaml@main
     with:
       branch-name: content-sharing
       snap-name: ros2-talker-listener
-      snapcraft-args: SNAPCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=1
