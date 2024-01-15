@@ -16,6 +16,7 @@ jobs:
       branch-name: content-sharing
       snap-name: ros2-talker-listener
       enable-experimental-extensions-env: true
+      snap-install-args: --devmode
       test-script: |
                     #!/bin/bash
                     sudo snap connect ros2-talker-listener:ros-humble ros-humble-ros-base
